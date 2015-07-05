@@ -8,7 +8,7 @@ function initDatabase(callback) {
 	// Set up sqlite database.
 	var db = new sqlite3.Database("data.sqlite");
 	db.serialize(function() {
-		db.run("CREATE TABLE IF NOT EXISTS data (name TEXT)");
+		db.run("CREATE TABLE IF NOT EXISTS data (point)");
 		callback(db);
 	});
 }
@@ -23,7 +23,7 @@ function updateRow(db, value) {
 function readRows(db) {
 	// Read some data.
 	db.each("SELECT rowid AS id, name FROM data", function(err, row) {
-		console.log(row.id + ": " + row.name);
+		console.log(row.id + ": " + row.points);
 	});
 }
 
@@ -39,16 +39,21 @@ function fetchPage(url, callback) {
 	});
 }
 
+
 function run(db) {
 	// Use request to read in pages.
-	fetchPage("https://morph.io", function (body) {
+	fetchPage("http://www.codecademy.com/scriptMaster99299", function (body) {
 		// Use cheerio to find things in the page with css selectors.
 		var $ = cheerio.load(body);
 
-		var elements = $("div.media-body span.p-name").each(function () {
-			var value = $(this).text().trim();
-			updateRow(db, value);
-		});
+		var points = $('h3.padding-right--quarter').eq(0).text();
+		console.log(points);
+		updateRow(db, points);
+
+		// var elements = $("div.media-body span.p-name").each(function () {
+		// 	var value = $(this).text().trim();
+		// 	updateRow(db, value);
+		// });
 
 		readRows(db);
 
