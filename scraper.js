@@ -9,7 +9,7 @@ var beeminderAuthToken = 'Bpyqep924B9Z2WotsmdF';
 var beeminderUsr = "dotdotdot";
 var beeminderGoal = "codecademy";
 var beeminderURL = 'https://www.beeminder.com/api/v1/users/'+ beeminderUsr + '/goals/'+
-										beeminderGoal+'/datapoints.json?auth_token='+ beeminderAuthToken;
+										beeminderGoal + '/datapoints.json?auth_token='+ beeminderAuthToken;
 
 function initDatabase(callback) {
 	// Set up sqlite database.
@@ -59,6 +59,7 @@ function run(db) {
 
 		readRows(db);
 		db.close();
+
 
 
 		//post to beeminder
