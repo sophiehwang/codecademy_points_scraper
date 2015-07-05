@@ -8,21 +8,21 @@ function initDatabase(callback) {
 	// Set up sqlite database.
 	var db = new sqlite3.Database("data.sqlite");
 	db.serialize(function() {
-		db.run("CREATE TABLE IF NOT EXISTS data (points)");
+		db.run("CREATE TABLE IF NOT EXISTS data (points, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
 		callback(db);
 	});
 }
 
 function updateRow(db, value) {
 	// Insert some data.
-	var statement = db.prepare("INSERT INTO data VALUES (?)");
+	var statement = db.prepare("INSERT INTO data (points) VALUES (?)");
 	statement.run(value);
 	statement.finalize();
 }
 
 function readRows(db) {
 	// Read some data.
-	db.each("SELECT rowid AS id, points FROM data", function(err, row) {
+	db.each("SELECT rowid AS id, points, created_at FROM data", function(err, row) {
 		console.log(row.id + ": " + row.points);
 	});
 }
