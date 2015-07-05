@@ -5,6 +5,7 @@ var request = require("request");
 var postRquest = require('request');
 var sqlite3 = require("sqlite3").verbose();
 var codecademyID =  'scriptMaster99299';
+var offset = 209; // 7/4 baseline
 var beeminderAuthToken = 'Bpyqep924B9Z2WotsmdF';
 var beeminderUsr = "dotdotdot";
 var beeminderGoal = "codecademy";
@@ -54,7 +55,9 @@ function run(db) {
 		var $ = cheerio.load(body);
 
 		var points = $('h3.padding-right--quarter').eq(0).text();
+		points = points - offset;
 		console.log(points);
+
 		updateRow(db, points);
 
 		readRows(db);
