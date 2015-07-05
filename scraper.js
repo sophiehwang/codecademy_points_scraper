@@ -2,7 +2,14 @@
 
 var cheerio = require("cheerio");
 var request = require("request");
+var postRquest = require('request');
 var sqlite3 = require("sqlite3").verbose();
+var codecademyID =  'scriptMaster99299';
+var beeminderAuthToken = 'Bpyqep924B9Z2WotsmdF';
+var beeminderUsr = "dotdotdot";
+var beeminderGoal = "codecademy";
+var beeminderURL = 'https://www.beeminder.com/api/v1/users/'+ beeminderUsr + '/goals/'+
+										beeminderGoal+'/datapoints.json?auth_token'+ beeminderAuthToken;
 
 function initDatabase(callback) {
 	// Set up sqlite database.
@@ -42,7 +49,7 @@ function fetchPage(url, callback) {
 
 function run(db) {
 	// Use request to read in pages.
-	fetchPage("http://www.codecademy.com/scriptMaster99299", function (body) {
+	fetchPage("http://www.codecademy.com/" + codecademyID , function (body) {
 		// Use cheerio to find things in the page with css selectors.
 		var $ = cheerio.load(body);
 
@@ -50,14 +57,24 @@ function run(db) {
 		console.log(points);
 		updateRow(db, points);
 
-		// var elements = $("div.media-body span.p-name").each(function () {
-		// 	var value = $(this).text().trim();
-		// 	updateRow(db, value);
-		// });
-
 		readRows(db);
-
 		db.close();
+
+
+		//post to beeminder
+		postRquest({
+			url: beeminderURL + '&value=' + points , //URL to hit
+			method: 'POST'
+		}, function(error, response, body){
+			if(error) {
+					console.log(error);
+			} else {
+					console.log(response.statusCode, body);
+			}
+		});
+		//end of beeminder POST
+
+
 	});
 }
 
